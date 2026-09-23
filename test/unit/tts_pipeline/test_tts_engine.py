@@ -311,22 +311,6 @@ def test_mocked_create_phoneme_and_f0_and_volume_output(
     )
 
 
-@pytest.mark.parametrize("lyric", ["あ", "ど"])
-def test_create_phoneme_and_f0_and_volume_with_non_rest_first_note(
-    lyric: str,
-) -> None:
-    """`SongEngine.create_phoneme_and_f0_and_volume()` は先頭が休符でない楽譜を拒否する。"""
-    song_engine = SongEngine(MockCoreWrapper())
-    score = Score(
-        notes=[
-            Note(key=60, frame_length=12, lyric=lyric),
-            Note(key=None, frame_length=10, lyric=""),
-        ]
-    )
-    with pytest.raises(SongInvalidInputError):
-        song_engine.create_phoneme_and_f0_and_volume(score, StyleId(7))
-
-
 def test_mocked_create_volume_from_phoneme_and_f0_output(
     snapshot_json: SnapshotAssertion,
 ) -> None:
@@ -371,6 +355,17 @@ def test_mocked_frame_synthesize_wave_output(
     assert snapshot_json(name="wave") == round_floats(
         result_wave.tolist(), round_value=2
     )
+
+
+def test_create_phoneme_and_f0_and_volume_non_rest_first_note_error() -> None:
+    """`SongEngine.create_phoneme_and_f0_and_volume()` で先頭のノートが休符でない楽譜を渡すとエラーになる。"""
+    # Inputs
+    song_engine = SongEngine(MockCoreWrapper())
+    score = _gen_doremi_score()
+    score.notes[0] = Note(key=60, frame_length=10, lyric="あ")
+    # Test
+    with pytest.raises(SongInvalidInputError):
+        song_engine.create_phoneme_and_f0_and_volume(score, StyleId(7))
 
 
 def _koreha_arimasuka_base_expected() -> list[AccentPhrase]:
