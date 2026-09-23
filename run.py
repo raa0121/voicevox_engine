@@ -359,8 +359,12 @@ def main() -> None:
     )
     tts_engines = make_tts_engines_from_cores(core_manager)
     song_engines = make_song_engines_from_cores(core_manager)
-    assert len(tts_engines.versions()) != 0, "音声合成エンジンがありません。"
-    assert len(song_engines.versions()) != 0, "音声合成エンジンがありません。"
+    assert len(tts_engines.versions()) != 0, (
+        "テキスト音声合成エンジンがありません。コアが見つからなかった可能性があります。"
+    )
+    assert len(song_engines.versions()) != 0, (
+        "歌声音声合成エンジンがありません。コアが見つからなかった可能性があります。"
+    )
 
     cancellable_engine: CancellableEngine | None = None
     if args.enable_cancellable_synthesis:

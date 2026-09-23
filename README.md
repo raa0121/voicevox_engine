@@ -81,6 +81,33 @@ curl -s \
 
 `speaker` に指定する値は `/speakers` エンドポイントで得られるスタイルの情報にある `id` です。互換性のために `speaker` という名前になっています。
 
+### ストリーミングで音声合成するサンプルコード
+
+`/streaming_synthesis`は、音声を合成しながら音声ファイルを少しずつ返します。音声全体を待つことなく音声を再生できます。
+
+```bash
+echo -n "こんにちは、ストリーミング音声合成の世界へようこそ" >text.txt
+
+curl -s \
+    -X POST \
+    "127.0.0.1:50021/audio_query?speaker=1" \
+    --get --data-urlencode text@text.txt \
+    > query.json
+
+curl -s \
+    -H "Content-Type: application/json" \
+    -X POST \
+    -d @query.json \
+    "127.0.0.1:50021/streaming_synthesis?speaker=1&segment_length=0.3" \
+    > audio_stream.wav
+```
+
+`segment_length`で一度に合成する音声の長さを秒単位で指定できます。  
+音声をストリーミング再生したときに音声が途切れる場合は、`segment_length`に大きい値を指定してください。
+
+`start_offset`で音声の開始位置を指定することで、音声を途中から合成できます。  
+注意点として、別のリクエストで合成した２つの音声を結合すると、つなぎ目の音が不自然になる場合があります。全体の音声が必要な場合は１回のリクエストで合成してください。
+
 ### 音声を調整するサンプルコード
 
 `/audio_query` で得られる音声合成用のクエリのパラメータを編集することで、音声を調整できます。
