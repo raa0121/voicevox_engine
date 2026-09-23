@@ -797,6 +797,13 @@
         "title": "Preset",
         "type": "object"
       },
+      "ResourceFormat": {
+        "enum": [
+          "base64",
+          "url"
+        ],
+        "type": "string"
+      },
       "Score": {
         "description": "楽譜情報。",
         "properties": {
@@ -1358,48 +1365,58 @@
         "operationId": "accent_phrases",
         "parameters": [
           {
+            "description": "テキスト",
             "in": "query",
             "name": "text",
             "required": true,
             "schema": {
+              "description": "テキスト",
               "title": "Text",
               "type": "string"
             }
           },
           {
+            "description": "スタイルID",
             "in": "query",
             "name": "speaker",
             "required": true,
             "schema": {
+              "description": "スタイルID",
               "title": "Speaker",
               "type": "integer"
             }
           },
           {
+            "description": "テキストをAquesTalk 風記法として解釈するかどうか",
             "in": "query",
             "name": "is_kana",
             "required": false,
             "schema": {
               "default": false,
+              "description": "テキストをAquesTalk 風記法として解釈するかどうか",
               "title": "Is Kana",
               "type": "boolean"
             }
           },
           {
+            "description": "テキスト中の読みが不明な英単語をカタカナ読みにするかどうか",
             "in": "query",
             "name": "enable_katakana_english",
             "required": false,
             "schema": {
               "default": true,
+              "description": "テキスト中の読みが不明な英単語をカタカナ読みにするかどうか",
               "title": "Enable Katakana English",
               "type": "boolean"
             }
           },
           {
+            "description": "コアのバージョン",
             "in": "query",
             "name": "core_version",
             "required": false,
             "schema": {
+              "description": "コアのバージョン",
               "title": "Core Version",
               "type": "string"
             }
@@ -1497,38 +1514,46 @@
         "operationId": "audio_query",
         "parameters": [
           {
+            "description": "テキスト",
             "in": "query",
             "name": "text",
             "required": true,
             "schema": {
+              "description": "テキスト",
               "title": "Text",
               "type": "string"
             }
           },
           {
+            "description": "スタイルID",
             "in": "query",
             "name": "speaker",
             "required": true,
             "schema": {
+              "description": "スタイルID",
               "title": "Speaker",
               "type": "integer"
             }
           },
           {
+            "description": "テキスト中の読みが不明な英単語をカタカナ読みにするかどうか",
             "in": "query",
             "name": "enable_katakana_english",
             "required": false,
             "schema": {
               "default": true,
+              "description": "テキスト中の読みが不明な英単語をカタカナ読みにするかどうか",
               "title": "Enable Katakana English",
               "type": "boolean"
             }
           },
           {
+            "description": "コアのバージョン",
             "in": "query",
             "name": "core_version",
             "required": false,
             "schema": {
+              "description": "コアのバージョン",
               "title": "Core Version",
               "type": "string"
             }
@@ -1568,38 +1593,46 @@
         "operationId": "audio_query_from_preset",
         "parameters": [
           {
+            "description": "テキスト",
             "in": "query",
             "name": "text",
             "required": true,
             "schema": {
+              "description": "テキスト",
               "title": "Text",
               "type": "string"
             }
           },
           {
+            "description": "使用するプリセットのプリセットID",
             "in": "query",
             "name": "preset_id",
             "required": true,
             "schema": {
+              "description": "使用するプリセットのプリセットID",
               "title": "Preset Id",
               "type": "integer"
             }
           },
           {
+            "description": "テキスト中の読みが不明な英単語をカタカナ読みにするかどうか",
             "in": "query",
             "name": "enable_katakana_english",
             "required": false,
             "schema": {
               "default": true,
+              "description": "テキスト中の読みが不明な英単語をカタカナ読みにするかどうか",
               "title": "Enable Katakana English",
               "type": "boolean"
             }
           },
           {
+            "description": "コアのバージョン",
             "in": "query",
             "name": "core_version",
             "required": false,
             "schema": {
+              "description": "コアのバージョン",
               "title": "Core Version",
               "type": "string"
             }
@@ -1638,29 +1671,35 @@
         "operationId": "cancellable_synthesis",
         "parameters": [
           {
+            "description": "スタイルID",
             "in": "query",
             "name": "speaker",
             "required": true,
             "schema": {
+              "description": "スタイルID",
               "title": "Speaker",
               "type": "integer"
             }
           },
           {
+            "description": "疑問系のテキストが与えられたら語尾を自動調整する",
             "in": "query",
             "name": "enable_interrogative_upspeak",
             "required": false,
             "schema": {
               "default": true,
+              "description": "疑問系のテキストが与えられたら語尾を自動調整する",
               "title": "Enable Interrogative Upspeak",
               "type": "boolean"
             }
           },
           {
+            "description": "コアのバージョン",
             "in": "query",
             "name": "core_version",
             "required": false,
             "schema": {
+              "description": "コアのバージョン",
               "title": "Core Version",
               "type": "string"
             }
@@ -1870,19 +1909,23 @@
         "operationId": "frame_synthesis",
         "parameters": [
           {
+            "description": "スタイルID",
             "in": "query",
             "name": "speaker",
             "required": true,
             "schema": {
+              "description": "スタイルID",
               "title": "Speaker",
               "type": "integer"
             }
           },
           {
+            "description": "コアのバージョン",
             "in": "query",
             "name": "core_version",
             "required": false,
             "schema": {
+              "description": "コアのバージョン",
               "title": "Core Version",
               "type": "string"
             }
@@ -1986,10 +2029,12 @@
         "operationId": "initialize_speaker",
         "parameters": [
           {
+            "description": "スタイルID",
             "in": "query",
             "name": "speaker",
             "required": true,
             "schema": {
+              "description": "スタイルID",
               "title": "Speaker",
               "type": "integer"
             }
@@ -2007,10 +2052,12 @@
             }
           },
           {
+            "description": "コアのバージョン",
             "in": "query",
             "name": "core_version",
             "required": false,
             "schema": {
+              "description": "コアのバージョン",
               "title": "Core Version",
               "type": "string"
             }
@@ -2107,19 +2154,23 @@
         "operationId": "is_initialized_speaker",
         "parameters": [
           {
+            "description": "スタイルID",
             "in": "query",
             "name": "speaker",
             "required": true,
             "schema": {
+              "description": "スタイルID",
               "title": "Speaker",
               "type": "integer"
             }
           },
           {
+            "description": "コアのバージョン",
             "in": "query",
             "name": "core_version",
             "required": false,
             "schema": {
+              "description": "コアのバージョン",
               "title": "Core Version",
               "type": "string"
             }
@@ -2159,19 +2210,23 @@
         "operationId": "mora_data",
         "parameters": [
           {
+            "description": "スタイルID",
             "in": "query",
             "name": "speaker",
             "required": true,
             "schema": {
+              "description": "スタイルID",
               "title": "Speaker",
               "type": "integer"
             }
           },
           {
+            "description": "コアのバージョン",
             "in": "query",
             "name": "core_version",
             "required": false,
             "schema": {
+              "description": "コアのバージョン",
               "title": "Core Version",
               "type": "string"
             }
@@ -2228,19 +2283,23 @@
         "operationId": "mora_length",
         "parameters": [
           {
+            "description": "スタイルID",
             "in": "query",
             "name": "speaker",
             "required": true,
             "schema": {
+              "description": "スタイルID",
               "title": "Speaker",
               "type": "integer"
             }
           },
           {
+            "description": "コアのバージョン",
             "in": "query",
             "name": "core_version",
             "required": false,
             "schema": {
+              "description": "コアのバージョン",
               "title": "Core Version",
               "type": "string"
             }
@@ -2297,19 +2356,23 @@
         "operationId": "mora_pitch",
         "parameters": [
           {
+            "description": "スタイルID",
             "in": "query",
             "name": "speaker",
             "required": true,
             "schema": {
+              "description": "スタイルID",
               "title": "Speaker",
               "type": "integer"
             }
           },
           {
+            "description": "コアのバージョン",
             "in": "query",
             "name": "core_version",
             "required": false,
             "schema": {
+              "description": "コアのバージョン",
               "title": "Core Version",
               "type": "string"
             }
@@ -2367,10 +2430,12 @@
         "operationId": "morphable_targets",
         "parameters": [
           {
+            "description": "コアのバージョン",
             "in": "query",
             "name": "core_version",
             "required": false,
             "schema": {
+              "description": "コアのバージョン",
               "title": "Core Version",
               "type": "string"
             }
@@ -2430,10 +2495,12 @@
         "operationId": "multi_synthesis",
         "parameters": [
           {
+            "description": "スタイルID",
             "in": "query",
             "name": "speaker",
             "required": true,
             "schema": {
+              "description": "スタイルID",
               "title": "Speaker",
               "type": "integer"
             }
@@ -2451,10 +2518,12 @@
             }
           },
           {
+            "description": "コアのバージョン",
             "in": "query",
             "name": "core_version",
             "required": false,
             "schema": {
+              "description": "コアのバージョン",
               "title": "Core Version",
               "type": "string"
             }
@@ -2583,19 +2652,23 @@
         "operationId": "sing_frame_audio_query",
         "parameters": [
           {
+            "description": "スタイルID",
             "in": "query",
             "name": "speaker",
             "required": true,
             "schema": {
+              "description": "スタイルID",
               "title": "Speaker",
               "type": "integer"
             }
           },
           {
+            "description": "コアのバージョン",
             "in": "query",
             "name": "core_version",
             "required": false,
             "schema": {
+              "description": "コアのバージョン",
               "title": "Core Version",
               "type": "string"
             }
@@ -2644,19 +2717,23 @@
         "operationId": "sing_frame_f0",
         "parameters": [
           {
+            "description": "スタイルID",
             "in": "query",
             "name": "speaker",
             "required": true,
             "schema": {
+              "description": "スタイルID",
               "title": "Speaker",
               "type": "integer"
             }
           },
           {
+            "description": "コアのバージョン",
             "in": "query",
             "name": "core_version",
             "required": false,
             "schema": {
+              "description": "コアのバージョン",
               "title": "Core Version",
               "type": "string"
             }
@@ -2709,19 +2786,23 @@
         "operationId": "sing_frame_volume",
         "parameters": [
           {
+            "description": "スタイルID",
             "in": "query",
             "name": "speaker",
             "required": true,
             "schema": {
+              "description": "スタイルID",
               "title": "Speaker",
               "type": "integer"
             }
           },
           {
+            "description": "コアのバージョン",
             "in": "query",
             "name": "core_version",
             "required": false,
             "schema": {
+              "description": "コアのバージョン",
               "title": "Core Version",
               "type": "string"
             }
@@ -2775,33 +2856,34 @@
         "operationId": "singer_info",
         "parameters": [
           {
+            "description": "キャラクターのUUID",
             "in": "query",
             "name": "speaker_uuid",
             "required": true,
             "schema": {
+              "description": "キャラクターのUUID",
               "title": "Speaker Uuid",
               "type": "string"
             }
           },
           {
+            "description": "画像や音声の返却形式",
             "in": "query",
             "name": "resource_format",
             "required": false,
             "schema": {
+              "$ref": "#/components/schemas/ResourceFormat",
               "default": "base64",
-              "enum": [
-                "base64",
-                "url"
-              ],
-              "title": "Resource Format",
-              "type": "string"
+              "description": "画像や音声の返却形式"
             }
           },
           {
+            "description": "コアのバージョン",
             "in": "query",
             "name": "core_version",
             "required": false,
             "schema": {
+              "description": "コアのバージョン",
               "title": "Core Version",
               "type": "string"
             }
@@ -2841,10 +2923,12 @@
         "operationId": "singers",
         "parameters": [
           {
+            "description": "コアのバージョン",
             "in": "query",
             "name": "core_version",
             "required": false,
             "schema": {
+              "description": "コアのバージョン",
               "title": "Core Version",
               "type": "string"
             }
@@ -2888,33 +2972,34 @@
         "operationId": "speaker_info",
         "parameters": [
           {
+            "description": "キャラクターのUUID",
             "in": "query",
             "name": "speaker_uuid",
             "required": true,
             "schema": {
+              "description": "キャラクターのUUID",
               "title": "Speaker Uuid",
               "type": "string"
             }
           },
           {
+            "description": "画像や音声の返却形式",
             "in": "query",
             "name": "resource_format",
             "required": false,
             "schema": {
+              "$ref": "#/components/schemas/ResourceFormat",
               "default": "base64",
-              "enum": [
-                "base64",
-                "url"
-              ],
-              "title": "Resource Format",
-              "type": "string"
+              "description": "画像や音声の返却形式"
             }
           },
           {
+            "description": "コアのバージョン",
             "in": "query",
             "name": "core_version",
             "required": false,
             "schema": {
+              "description": "コアのバージョン",
               "title": "Core Version",
               "type": "string"
             }
@@ -2954,10 +3039,12 @@
         "operationId": "speakers",
         "parameters": [
           {
+            "description": "コアのバージョン",
             "in": "query",
             "name": "core_version",
             "required": false,
             "schema": {
+              "description": "コアのバージョン",
               "title": "Core Version",
               "type": "string"
             }
@@ -3000,10 +3087,12 @@
         "operationId": "streaming_synthesis",
         "parameters": [
           {
+            "description": "スタイルID",
             "in": "query",
             "name": "speaker",
             "required": true,
             "schema": {
+              "description": "スタイルID",
               "title": "Speaker",
               "type": "integer"
             }
@@ -3047,10 +3136,12 @@
             }
           },
           {
+            "description": "コアのバージョン",
             "in": "query",
             "name": "core_version",
             "required": false,
             "schema": {
+              "description": "コアのバージョン",
               "title": "Core Version",
               "type": "string"
             }
@@ -3101,10 +3192,12 @@
         "operationId": "supported_devices",
         "parameters": [
           {
+            "description": "コアのバージョン",
             "in": "query",
             "name": "core_version",
             "required": false,
             "schema": {
+              "description": "コアのバージョン",
               "title": "Core Version",
               "type": "string"
             }
@@ -3143,10 +3236,12 @@
         "operationId": "synthesis",
         "parameters": [
           {
+            "description": "スタイルID",
             "in": "query",
             "name": "speaker",
             "required": true,
             "schema": {
+              "description": "スタイルID",
               "title": "Speaker",
               "type": "integer"
             }
@@ -3164,10 +3259,12 @@
             }
           },
           {
+            "description": "コアのバージョン",
             "in": "query",
             "name": "core_version",
             "required": false,
             "schema": {
+              "description": "コアのバージョン",
               "title": "Core Version",
               "type": "string"
             }
@@ -3218,28 +3315,34 @@
         "operationId": "_synthesis_morphing",
         "parameters": [
           {
+            "description": "モーフィングのベースのスタイルID",
             "in": "query",
             "name": "base_speaker",
             "required": true,
             "schema": {
+              "description": "モーフィングのベースのスタイルID",
               "title": "Base Speaker",
               "type": "integer"
             }
           },
           {
+            "description": "モーフィングのターゲットのスタイルID",
             "in": "query",
             "name": "target_speaker",
             "required": true,
             "schema": {
+              "description": "モーフィングのターゲットのスタイルID",
               "title": "Target Speaker",
               "type": "integer"
             }
           },
           {
+            "description": "モーフィングの割合（0.0でベース、1.0でターゲットのスタイルに近づく）",
             "in": "query",
             "name": "morph_rate",
             "required": true,
             "schema": {
+              "description": "モーフィングの割合（0.0でベース、1.0でターゲットのスタイルに近づく）",
               "maximum": 1.0,
               "minimum": 0.0,
               "title": "Morph Rate",
@@ -3259,10 +3362,12 @@
             }
           },
           {
+            "description": "コアのバージョン",
             "in": "query",
             "name": "core_version",
             "required": false,
             "schema": {
+              "description": "コアのバージョン",
               "title": "Core Version",
               "type": "string"
             }

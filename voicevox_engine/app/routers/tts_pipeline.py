@@ -98,10 +98,17 @@ def generate_tts_pipeline_router(
         summary="音声合成用のクエリを作成する",
     )
     def audio_query(
-        text: str,
-        style_id: Annotated[StyleId, Query(alias="speaker")],
-        enable_katakana_english: bool = True,
-        core_version: str | SkipJsonSchema[None] = None,
+        text: Annotated[str, Query(description="テキスト")],
+        style_id: Annotated[StyleId, Query(alias="speaker", description="スタイルID")],
+        enable_katakana_english: Annotated[
+            bool,
+            Query(
+                description="テキスト中の読みが不明な英単語をカタカナ読みにするかどうか"
+            ),
+        ] = True,
+        core_version: Annotated[
+            str | SkipJsonSchema[None], Query(description="コアのバージョン")
+        ] = None,
     ) -> AudioQuery:
         """音声合成用のクエリの初期値を得ます。ここで得られたクエリはそのまま音声合成に利用できます。各値の意味は`Schemas`を参照してください。"""
         version = core_version or LATEST_VERSION
@@ -130,10 +137,19 @@ def generate_tts_pipeline_router(
         summary="音声合成用のクエリをプリセットを用いて作成する",
     )
     def audio_query_from_preset(
-        text: str,
-        preset_id: int,
-        enable_katakana_english: bool = True,
-        core_version: str | SkipJsonSchema[None] = None,
+        text: Annotated[str, Query(description="テキスト")],
+        preset_id: Annotated[
+            int, Query(description="使用するプリセットのプリセットID")
+        ],
+        enable_katakana_english: Annotated[
+            bool,
+            Query(
+                description="テキスト中の読みが不明な英単語をカタカナ読みにするかどうか"
+            ),
+        ] = True,
+        core_version: Annotated[
+            str | SkipJsonSchema[None], Query(description="コアのバージョン")
+        ] = None,
     ) -> AudioQuery:
         """音声合成用のクエリの初期値を得ます。ここで得られたクエリはそのまま音声合成に利用できます。各値の意味は`Schemas`を参照してください。"""
         version = core_version or LATEST_VERSION
@@ -184,11 +200,21 @@ def generate_tts_pipeline_router(
         },
     )
     def accent_phrases(
-        text: str,
-        style_id: Annotated[StyleId, Query(alias="speaker")],
-        is_kana: bool = False,
-        enable_katakana_english: bool = True,
-        core_version: str | SkipJsonSchema[None] = None,
+        text: Annotated[str, Query(description="テキスト")],
+        style_id: Annotated[StyleId, Query(alias="speaker", description="スタイルID")],
+        is_kana: Annotated[
+            bool,
+            Query(description="テキストをAquesTalk 風記法として解釈するかどうか"),
+        ] = False,
+        enable_katakana_english: Annotated[
+            bool,
+            Query(
+                description="テキスト中の読みが不明な英単語をカタカナ読みにするかどうか"
+            ),
+        ] = True,
+        core_version: Annotated[
+            str | SkipJsonSchema[None], Query(description="コアのバージョン")
+        ] = None,
     ) -> list[AccentPhrase]:
         """
         テキストからアクセント句を得ます。
@@ -221,8 +247,10 @@ def generate_tts_pipeline_router(
     )
     def mora_data(
         accent_phrases: list[AccentPhrase],
-        style_id: Annotated[StyleId, Query(alias="speaker")],
-        core_version: str | SkipJsonSchema[None] = None,
+        style_id: Annotated[StyleId, Query(alias="speaker", description="スタイルID")],
+        core_version: Annotated[
+            str | SkipJsonSchema[None], Query(description="コアのバージョン")
+        ] = None,
     ) -> list[AccentPhrase]:
         version = core_version or LATEST_VERSION
         engine = tts_engines.get_tts_engine(version)
@@ -235,8 +263,10 @@ def generate_tts_pipeline_router(
     )
     def mora_length(
         accent_phrases: list[AccentPhrase],
-        style_id: Annotated[StyleId, Query(alias="speaker")],
-        core_version: str | SkipJsonSchema[None] = None,
+        style_id: Annotated[StyleId, Query(alias="speaker", description="スタイルID")],
+        core_version: Annotated[
+            str | SkipJsonSchema[None], Query(description="コアのバージョン")
+        ] = None,
     ) -> list[AccentPhrase]:
         version = core_version or LATEST_VERSION
         engine = tts_engines.get_tts_engine(version)
@@ -249,8 +279,10 @@ def generate_tts_pipeline_router(
     )
     def mora_pitch(
         accent_phrases: list[AccentPhrase],
-        style_id: Annotated[StyleId, Query(alias="speaker")],
-        core_version: str | SkipJsonSchema[None] = None,
+        style_id: Annotated[StyleId, Query(alias="speaker", description="スタイルID")],
+        core_version: Annotated[
+            str | SkipJsonSchema[None], Query(description="コアのバージョン")
+        ] = None,
     ) -> list[AccentPhrase]:
         version = core_version or LATEST_VERSION
         engine = tts_engines.get_tts_engine(version)
@@ -271,7 +303,7 @@ def generate_tts_pipeline_router(
     )
     def synthesis(
         query: AudioQuery,
-        style_id: Annotated[StyleId, Query(alias="speaker")],
+        style_id: Annotated[StyleId, Query(alias="speaker", description="スタイルID")],
         background_tasks: BackgroundTasks,
         enable_interrogative_upspeak: Annotated[
             bool,
@@ -279,7 +311,9 @@ def generate_tts_pipeline_router(
                 description="疑問系のテキストが与えられたら語尾を自動調整する",
             ),
         ] = True,
-        core_version: str | SkipJsonSchema[None] = None,
+        core_version: Annotated[
+            str | SkipJsonSchema[None], Query(description="コアのバージョン")
+        ] = None,
     ) -> FileResponse:
         version = core_version or LATEST_VERSION
         engine = tts_engines.get_tts_engine(version)
@@ -310,11 +344,18 @@ def generate_tts_pipeline_router(
     )
     def cancellable_synthesis(
         query: AudioQuery,
-        style_id: Annotated[StyleId, Query(alias="speaker")],
+        style_id: Annotated[StyleId, Query(alias="speaker", description="スタイルID")],
         request: Request,
         background_tasks: BackgroundTasks,
-        enable_interrogative_upspeak: bool = True,
-        core_version: str | SkipJsonSchema[None] = None,
+        enable_interrogative_upspeak: Annotated[
+            bool,
+            Query(
+                description="疑問系のテキストが与えられたら語尾を自動調整する",
+            ),
+        ] = True,
+        core_version: Annotated[
+            str | SkipJsonSchema[None], Query(description="コアのバージョン")
+        ] = None,
     ) -> FileResponse:
         if cancellable_engine is None:
             raise HTTPException(
@@ -357,7 +398,7 @@ def generate_tts_pipeline_router(
     )
     def multi_synthesis(
         queries: list[AudioQuery],
-        style_id: Annotated[StyleId, Query(alias="speaker")],
+        style_id: Annotated[StyleId, Query(alias="speaker", description="スタイルID")],
         background_tasks: BackgroundTasks,
         enable_interrogative_upspeak: Annotated[
             bool,
@@ -365,7 +406,9 @@ def generate_tts_pipeline_router(
                 description="疑問系のテキストが与えられたら語尾を自動調整する",
             ),
         ] = True,
-        core_version: str | SkipJsonSchema[None] = None,
+        core_version: Annotated[
+            str | SkipJsonSchema[None], Query(description="コアのバージョン")
+        ] = None,
     ) -> FileResponse:
         version = core_version or LATEST_VERSION
         engine = tts_engines.get_tts_engine(version)
@@ -411,7 +454,7 @@ def generate_tts_pipeline_router(
     )
     def streaming_synthesis(
         query: AudioQuery,
-        style_id: Annotated[StyleId, Query(alias="speaker")],
+        style_id: Annotated[StyleId, Query(alias="speaker", description="スタイルID")],
         start_offset: Annotated[
             float,
             Query(ge=0, description="音声の開始位置"),
@@ -426,7 +469,9 @@ def generate_tts_pipeline_router(
                 description="疑問系のテキストが与えられたら語尾を自動調整する",
             ),
         ] = True,
-        core_version: str | SkipJsonSchema[None] = None,
+        core_version: Annotated[
+            str | SkipJsonSchema[None], Query(description="コアのバージョン")
+        ] = None,
     ) -> StreamingResponse:
         version = core_version or LATEST_VERSION
         engine = tts_engines.get_tts_engine(version)
@@ -460,8 +505,10 @@ def generate_tts_pipeline_router(
     )
     def sing_frame_audio_query(
         score: Score,
-        style_id: Annotated[StyleId, Query(alias="speaker")],
-        core_version: str | SkipJsonSchema[None] = None,
+        style_id: Annotated[StyleId, Query(alias="speaker", description="スタイルID")],
+        core_version: Annotated[
+            str | SkipJsonSchema[None], Query(description="コアのバージョン")
+        ] = None,
     ) -> FrameAudioQuery:
         """歌唱音声合成用のクエリの初期値を得ます。ここで得られたクエリはそのまま歌唱音声合成に利用できます。各値の意味は`Schemas`を参照してください。"""
         version = core_version or LATEST_VERSION
@@ -490,8 +537,10 @@ def generate_tts_pipeline_router(
     def sing_frame_f0(
         score: Score,
         frame_audio_query: FrameAudioQuery,
-        style_id: Annotated[StyleId, Query(alias="speaker")],
-        core_version: str | SkipJsonSchema[None] = None,
+        style_id: Annotated[StyleId, Query(alias="speaker", description="スタイルID")],
+        core_version: Annotated[
+            str | SkipJsonSchema[None], Query(description="コアのバージョン")
+        ] = None,
     ) -> list[float]:
         version = core_version or LATEST_VERSION
         engine = song_engines.get_song_engine(version)
@@ -510,8 +559,10 @@ def generate_tts_pipeline_router(
     def sing_frame_volume(
         score: Score,
         frame_audio_query: FrameAudioQuery,
-        style_id: Annotated[StyleId, Query(alias="speaker")],
-        core_version: str | SkipJsonSchema[None] = None,
+        style_id: Annotated[StyleId, Query(alias="speaker", description="スタイルID")],
+        core_version: Annotated[
+            str | SkipJsonSchema[None], Query(description="コアのバージョン")
+        ] = None,
     ) -> list[float]:
         version = core_version or LATEST_VERSION
         engine = song_engines.get_song_engine(version)
@@ -536,9 +587,11 @@ def generate_tts_pipeline_router(
     )
     def frame_synthesis(
         query: FrameAudioQuery,
-        style_id: Annotated[StyleId, Query(alias="speaker")],
+        style_id: Annotated[StyleId, Query(alias="speaker", description="スタイルID")],
         background_tasks: BackgroundTasks,
-        core_version: str | SkipJsonSchema[None] = None,
+        core_version: Annotated[
+            str | SkipJsonSchema[None], Query(description="コアのバージョン")
+        ] = None,
     ) -> FileResponse:
         """歌唱音声合成を行います。"""
         version = core_version or LATEST_VERSION
@@ -619,14 +672,16 @@ def generate_tts_pipeline_router(
 
     @router.post("/initialize_speaker", status_code=204, tags=["その他"])
     def initialize_speaker(
-        style_id: Annotated[StyleId, Query(alias="speaker")],
+        style_id: Annotated[StyleId, Query(alias="speaker", description="スタイルID")],
         skip_reinit: Annotated[
             bool,
             Query(
                 description="既に初期化済みのスタイルの再初期化をスキップするかどうか"
             ),
         ] = False,
-        core_version: str | SkipJsonSchema[None] = None,
+        core_version: Annotated[
+            str | SkipJsonSchema[None], Query(description="コアのバージョン")
+        ] = None,
     ) -> None:
         """
         指定されたスタイルを初期化します。
@@ -639,8 +694,10 @@ def generate_tts_pipeline_router(
 
     @router.get("/is_initialized_speaker", tags=["その他"])
     def is_initialized_speaker(
-        style_id: Annotated[StyleId, Query(alias="speaker")],
-        core_version: str | SkipJsonSchema[None] = None,
+        style_id: Annotated[StyleId, Query(alias="speaker", description="スタイルID")],
+        core_version: Annotated[
+            str | SkipJsonSchema[None], Query(description="コアのバージョン")
+        ] = None,
     ) -> bool:
         """指定されたスタイルが初期化されているかどうかを返します。"""
         version = core_version or LATEST_VERSION
@@ -649,7 +706,9 @@ def generate_tts_pipeline_router(
 
     @router.get("/supported_devices", tags=["その他"])
     def supported_devices(
-        core_version: str | SkipJsonSchema[None] = None,
+        core_version: Annotated[
+            str | SkipJsonSchema[None], Query(description="コアのバージョン")
+        ] = None,
     ) -> SupportedDevicesInfo:
         """対応デバイスの一覧を取得します。"""
         version = core_version or LATEST_VERSION
