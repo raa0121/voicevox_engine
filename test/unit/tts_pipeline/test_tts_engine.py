@@ -357,67 +357,116 @@ def test_mocked_frame_synthesize_wave_output(
     )
 
 
-def _gen_doremi_frame_audio_query(song_engine: SongEngine) -> FrameAudioQuery:
-    phonemes, f0, volume = song_engine.create_phoneme_and_f0_and_volume(
-        _gen_doremi_score(), StyleId(7)
-    )
-    return FrameAudioQuery(
-        f0=f0,
-        volume=volume,
-        phonemes=phonemes,
-        volumeScale=1,
-        outputSamplingRate=24000,
-        outputStereo=False,
-    )
-
-
-def test_create_phoneme_and_f0_and_volume_with_empty_notes() -> None:
-    """`SongEngine.create_phoneme_and_f0_and_volume()` は空の notes を拒否する。"""
+def test_create_phoneme_and_f0_and_volume_empty_notes_error() -> None:
+    """`SongEngine.create_phoneme_and_f0_and_volume()` で空の notes を渡すとエラーになる。"""
+    # Inputs
     song_engine = SongEngine(MockCoreWrapper())
+    empty_score = Score(notes=[])
+    # Test
     with pytest.raises(SongInvalidInputError):
-        song_engine.create_phoneme_and_f0_and_volume(Score(notes=[]), StyleId(7))
+        song_engine.create_phoneme_and_f0_and_volume(empty_score, StyleId(7))
 
 
-def test_frame_synthesize_wave_with_empty_phonemes() -> None:
-    """`SongEngine.frame_synthesize_wave()` は空の phonemes を拒否する。"""
+def test_frame_synthesize_wave_empty_phonemes_error() -> None:
+    """`SongEngine.frame_synthesize_wave()` で空の phonemes を渡すとエラーになる。"""
+    # Inputs
     song_engine = SongEngine(MockCoreWrapper())
-    query = FrameAudioQuery(
+    empty_query = FrameAudioQuery(
         f0=[],
         volume=[],
         phonemes=[],
-        volumeScale=1,
-        outputSamplingRate=24000,
+        volumeScale=1.3,
+        outputSamplingRate=1200,
         outputStereo=False,
     )
+    # Test
     with pytest.raises(SongInvalidInputError):
-        song_engine.frame_synthesize_wave(query, StyleId(7))
+        song_engine.frame_synthesize_wave(empty_query, StyleId(7))
 
 
-@pytest.mark.parametrize("delta", [-1, 1])
-@pytest.mark.parametrize("target", ["f0", "volume"])
-def test_frame_synthesize_wave_with_mismatched_feature_length(
-    target: str, delta: int
-) -> None:
-    """`SongEngine.frame_synthesize_wave()` はフレーム長の合計と長さが異なる f0・volume を拒否する。"""
+def test_frame_synthesize_wave_f0_length_mismatch_error() -> None:
+    """`SongEngine.frame_synthesize_wave()` で f0 の長さがフレーム長の合計と異なるクエリを渡すとエラーになる。"""
+    # NOTE: 入力生成の簡略化に別関数を呼び出すため、別関数が正しく動作しない場合テストが落ちる
+    # Inputs
     song_engine = SongEngine(MockCoreWrapper())
-    query = _gen_doremi_frame_audio_query(song_engine)
-    feature: list[float] = getattr(query, target)
-    setattr(query, target, feature[:delta] if delta < 0 else feature + [0.0] * delta)
+    doremi_score = _gen_doremi_score()
+    phonemes, f0, volume = song_engine.create_phoneme_and_f0_and_volume(
+        doremi_score, StyleId(7)
+    )
+    short_f0_query = FrameAudioQuery(
+        f0=f0[:-1],
+        volume=volume,
+        phonemes=phonemes,
+        volumeScale=1.3,
+        outputSamplingRate=1200,
+        outputStereo=False,
+    )
+    long_f0_query = FrameAudioQuery(
+        f0=f0 + [0.0],
+        volume=volume,
+        phonemes=phonemes,
+        volumeScale=1.3,
+        outputSamplingRate=1200,
+        outputStereo=False,
+    )
+    # Test
     with pytest.raises(SongInvalidInputError):
-        song_engine.frame_synthesize_wave(query, StyleId(7))
+        song_engine.frame_synthesize_wave(short_f0_query, StyleId(7))
+    with pytest.raises(SongInvalidInputError):
+        song_engine.frame_synthesize_wave(long_f0_query, StyleId(7))
 
 
-@pytest.mark.parametrize("delta", [-1, 1])
-def test_create_volume_from_phoneme_and_f0_with_mismatched_f0_length(
-    delta: int,
-) -> None:
-    """`SongEngine.create_volume_from_phoneme_and_f0()` はフレーム長の合計と長さが異なる f0 を拒否する。"""
+def test_frame_synthesize_wave_volume_length_mismatch_error() -> None:
+    """`SongEngine.frame_synthesize_wave()` で volume の長さがフレーム長の合計と異なるクエリを渡すとエラーになる。"""
+    # NOTE: 入力生成の簡略化に別関数を呼び出すため、別関数が正しく動作しない場合テストが落ちる
+    # Inputs
     song_engine = SongEngine(MockCoreWrapper())
-    query = _gen_doremi_frame_audio_query(song_engine)
-    f0 = query.f0[:delta] if delta < 0 else query.f0 + [0.0] * delta
+    doremi_score = _gen_doremi_score()
+    phonemes, f0, volume = song_engine.create_phoneme_and_f0_and_volume(
+        doremi_score, StyleId(7)
+    )
+    short_volume_query = FrameAudioQuery(
+        f0=f0,
+        volume=volume[:-1],
+        phonemes=phonemes,
+        volumeScale=1.3,
+        outputSamplingRate=1200,
+        outputStereo=False,
+    )
+    long_volume_query = FrameAudioQuery(
+        f0=f0,
+        volume=volume + [0.0],
+        phonemes=phonemes,
+        volumeScale=1.3,
+        outputSamplingRate=1200,
+        outputStereo=False,
+    )
+    # Test
+    with pytest.raises(SongInvalidInputError):
+        song_engine.frame_synthesize_wave(short_volume_query, StyleId(7))
+    with pytest.raises(SongInvalidInputError):
+        song_engine.frame_synthesize_wave(long_volume_query, StyleId(7))
+
+
+def test_create_volume_from_phoneme_and_f0_f0_length_mismatch_error() -> None:
+    """`SongEngine.create_volume_from_phoneme_and_f0()` で f0 の長さがフレーム長の合計と異なる入力を渡すとエラーになる。"""
+    # NOTE: 入力生成の簡略化に別関数を呼び出すため、別関数が正しく動作しない場合テストが落ちる
+    # Inputs
+    song_engine = SongEngine(MockCoreWrapper())
+    doremi_score = _gen_doremi_score()
+    phonemes, f0, _ = song_engine.create_phoneme_and_f0_and_volume(
+        doremi_score, StyleId(7)
+    )
+    short_f0 = f0[:-1]
+    long_f0 = f0 + [0.0]
+    # Test
     with pytest.raises(SongInvalidInputError):
         song_engine.create_volume_from_phoneme_and_f0(
-            _gen_doremi_score(), query.phonemes, f0, StyleId(7)
+            doremi_score, phonemes, short_f0, StyleId(7)
+        )
+    with pytest.raises(SongInvalidInputError):
+        song_engine.create_volume_from_phoneme_and_f0(
+            doremi_score, phonemes, long_f0, StyleId(7)
         )
 
 
