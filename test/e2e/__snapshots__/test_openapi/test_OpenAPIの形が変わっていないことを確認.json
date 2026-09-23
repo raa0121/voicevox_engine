@@ -387,6 +387,7 @@
           "f0": {
             "description": "フレームごとの基本周波数",
             "items": {
+              "minimum": 0.0,
               "type": "number"
             },
             "title": "F0",

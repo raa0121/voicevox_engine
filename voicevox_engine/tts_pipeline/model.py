@@ -96,7 +96,9 @@ class FramePhoneme(BaseModel):
 class FrameAudioQuery(BaseModel):
     """フレームごとの音声合成用のクエリ。"""
 
-    f0: list[float] = Field(description="フレームごとの基本周波数")
+    f0: list[Annotated[float, Field(ge=0)]] = Field(
+        description="フレームごとの基本周波数"
+    )
     volume: list[float] = Field(description="フレームごとの音量")
     phonemes: list[FramePhoneme] = Field(description="音素のリスト")
     volumeScale: float = Field(description="全体の音量")
