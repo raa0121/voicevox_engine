@@ -4,6 +4,7 @@ from typing import Any
 from unittest.mock import MagicMock
 
 import numpy as np
+import pytest
 from syrupy.assertion import SnapshotAssertion
 
 from test.unit.tts_pipeline.tts_utils import gen_mora, sec
@@ -20,6 +21,7 @@ from voicevox_engine.tts_pipeline.model import (
 )
 from voicevox_engine.tts_pipeline.song_engine import (
     SongEngine,
+    SongInvalidInputError,
 )
 from voicevox_engine.tts_pipeline.tts_engine import (
     TTSEngine,
@@ -353,6 +355,70 @@ def test_mocked_frame_synthesize_wave_output(
     assert snapshot_json(name="wave") == round_floats(
         result_wave.tolist(), round_value=2
     )
+
+
+def _gen_doremi_frame_audio_query(song_engine: SongEngine) -> FrameAudioQuery:
+    phonemes, f0, volume = song_engine.create_phoneme_and_f0_and_volume(
+        _gen_doremi_score(), StyleId(7)
+    )
+    return FrameAudioQuery(
+        f0=f0,
+        volume=volume,
+        phonemes=phonemes,
+        volumeScale=1,
+        outputSamplingRate=24000,
+        outputStereo=False,
+    )
+
+
+def test_create_phoneme_and_f0_and_volume_with_empty_notes() -> None:
+    """`SongEngine.create_phoneme_and_f0_and_volume()` は空の notes を拒否する。"""
+    song_engine = SongEngine(MockCoreWrapper())
+    with pytest.raises(SongInvalidInputError):
+        song_engine.create_phoneme_and_f0_and_volume(Score(notes=[]), StyleId(7))
+
+
+def test_frame_synthesize_wave_with_empty_phonemes() -> None:
+    """`SongEngine.frame_synthesize_wave()` は空の phonemes を拒否する。"""
+    song_engine = SongEngine(MockCoreWrapper())
+    query = FrameAudioQuery(
+        f0=[],
+        volume=[],
+        phonemes=[],
+        volumeScale=1,
+        outputSamplingRate=24000,
+        outputStereo=False,
+    )
+    with pytest.raises(SongInvalidInputError):
+        song_engine.frame_synthesize_wave(query, StyleId(7))
+
+
+@pytest.mark.parametrize("delta", [-1, 1])
+@pytest.mark.parametrize("target", ["f0", "volume"])
+def test_frame_synthesize_wave_with_mismatched_feature_length(
+    target: str, delta: int
+) -> None:
+    """`SongEngine.frame_synthesize_wave()` はフレーム長の合計と長さが異なる f0・volume を拒否する。"""
+    song_engine = SongEngine(MockCoreWrapper())
+    query = _gen_doremi_frame_audio_query(song_engine)
+    feature: list[float] = getattr(query, target)
+    setattr(query, target, feature[:delta] if delta < 0 else feature + [0.0] * delta)
+    with pytest.raises(SongInvalidInputError):
+        song_engine.frame_synthesize_wave(query, StyleId(7))
+
+
+@pytest.mark.parametrize("delta", [-1, 1])
+def test_create_volume_from_phoneme_and_f0_with_mismatched_f0_length(
+    delta: int,
+) -> None:
+    """`SongEngine.create_volume_from_phoneme_and_f0()` はフレーム長の合計と長さが異なる f0 を拒否する。"""
+    song_engine = SongEngine(MockCoreWrapper())
+    query = _gen_doremi_frame_audio_query(song_engine)
+    f0 = query.f0[:delta] if delta < 0 else query.f0 + [0.0] * delta
+    with pytest.raises(SongInvalidInputError):
+        song_engine.create_volume_from_phoneme_and_f0(
+            _gen_doremi_score(), query.phonemes, f0, StyleId(7)
+        )
 
 
 def _koreha_arimasuka_base_expected() -> list[AccentPhrase]:
