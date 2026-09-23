@@ -4,6 +4,7 @@ from typing import Any
 from unittest.mock import MagicMock
 
 import numpy as np
+import pytest
 from syrupy.assertion import SnapshotAssertion
 
 from test.unit.tts_pipeline.tts_utils import gen_mora, sec
@@ -20,6 +21,7 @@ from voicevox_engine.tts_pipeline.model import (
 )
 from voicevox_engine.tts_pipeline.song_engine import (
     SongEngine,
+    SongInvalidInputError,
 )
 from voicevox_engine.tts_pipeline.tts_engine import (
     TTSEngine,
@@ -307,6 +309,22 @@ def test_mocked_create_phoneme_and_f0_and_volume_output(
     assert snapshot_json(name="query") == round_floats(
         pydantic_to_native_type(result), round_value=2
     )
+
+
+@pytest.mark.parametrize("lyric", ["あ", "ど"])
+def test_create_phoneme_and_f0_and_volume_with_non_rest_first_note(
+    lyric: str,
+) -> None:
+    """`SongEngine.create_phoneme_and_f0_and_volume()` は先頭が休符でない楽譜を拒否する。"""
+    song_engine = SongEngine(MockCoreWrapper())
+    score = Score(
+        notes=[
+            Note(key=60, frame_length=12, lyric=lyric),
+            Note(key=None, frame_length=10, lyric=""),
+        ]
+    )
+    with pytest.raises(SongInvalidInputError):
+        song_engine.create_phoneme_and_f0_and_volume(score, StyleId(7))
 
 
 def test_mocked_create_volume_from_phoneme_and_f0_output(
