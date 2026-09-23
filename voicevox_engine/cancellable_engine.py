@@ -205,7 +205,9 @@ def start_synthesis_subprocess(
         enable_mock=enable_mock,
     )
     tts_engines = make_tts_engines_from_cores(core_manager)
-    assert len(tts_engines.versions()) != 0, "音声合成エンジンがありません。"
+    assert len(tts_engines.versions()) != 0, (
+        "テキスト音声合成エンジンがありません。コアが見つからなかった可能性があります。"
+    )
 
     while True:
         try:
