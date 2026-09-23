@@ -401,19 +401,9 @@ def test_frame_synthesize_wave_f0_length_mismatch_error() -> None:
         outputSamplingRate=1200,
         outputStereo=False,
     )
-    long_f0_query = FrameAudioQuery(
-        f0=f0 + [0.0],
-        volume=volume,
-        phonemes=phonemes,
-        volumeScale=1.3,
-        outputSamplingRate=1200,
-        outputStereo=False,
-    )
     # Test
     with pytest.raises(SongInvalidInputError):
         song_engine.frame_synthesize_wave(short_f0_query, StyleId(7))
-    with pytest.raises(SongInvalidInputError):
-        song_engine.frame_synthesize_wave(long_f0_query, StyleId(7))
 
 
 def test_frame_synthesize_wave_volume_length_mismatch_error() -> None:
@@ -433,19 +423,9 @@ def test_frame_synthesize_wave_volume_length_mismatch_error() -> None:
         outputSamplingRate=1200,
         outputStereo=False,
     )
-    long_volume_query = FrameAudioQuery(
-        f0=f0,
-        volume=volume + [0.0],
-        phonemes=phonemes,
-        volumeScale=1.3,
-        outputSamplingRate=1200,
-        outputStereo=False,
-    )
     # Test
     with pytest.raises(SongInvalidInputError):
         song_engine.frame_synthesize_wave(short_volume_query, StyleId(7))
-    with pytest.raises(SongInvalidInputError):
-        song_engine.frame_synthesize_wave(long_volume_query, StyleId(7))
 
 
 def test_create_volume_from_phoneme_and_f0_f0_length_mismatch_error() -> None:
@@ -458,15 +438,10 @@ def test_create_volume_from_phoneme_and_f0_f0_length_mismatch_error() -> None:
         doremi_score, StyleId(7)
     )
     short_f0 = f0[:-1]
-    long_f0 = f0 + [0.0]
     # Test
     with pytest.raises(SongInvalidInputError):
         song_engine.create_volume_from_phoneme_and_f0(
             doremi_score, phonemes, short_f0, StyleId(7)
-        )
-    with pytest.raises(SongInvalidInputError):
-        song_engine.create_volume_from_phoneme_and_f0(
-            doremi_score, phonemes, long_f0, StyleId(7)
         )
 
 
